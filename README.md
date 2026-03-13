@@ -1,5 +1,8 @@
 # django-strava
 
+[![PyPI version](https://img.shields.io/pypi/v/django-strava)](https://pypi.org/project/django-strava/)
+[![CI](https://github.com/andyreagan/django-strava/actions/workflows/publish.yml/badge.svg)](https://github.com/andyreagan/django-strava/actions/workflows/publish.yml)
+
 django-strava is a Django strava App
 
 Detailed documentation is in the "docs" directory.
