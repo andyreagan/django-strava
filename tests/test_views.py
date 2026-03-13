@@ -362,7 +362,7 @@ class FetchOrUpdateTest(TestCase):
     def test_delete_event_removes_existing_activity(self):
         from django_strava.views import fetch_or_update
 
-        act = make_activity(self.athlete, activity_id=201)
+        make_activity(self.athlete, activity_id=201)
         event = self._make_event(
             object_type=WebhookEvent.ObjectType.activity,
             aspect_type=WebhookEvent.AspectType.delete,
