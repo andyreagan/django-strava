@@ -13,7 +13,7 @@ from django.http import HttpRequest, Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 
-from main import settings
+from django.conf import settings
 from .models import Activity, StravaAthlete, StravaToken, WebhookEvent
 
 # reference on the strava handshake:
@@ -300,6 +300,6 @@ def fetch_or_update(w_id: int) -> None:
 
 
 def activity(request: HttpRequest, activity_id: int) -> HttpResponse:
-    this_activity = request.user.stravatoken.stravaathlete.activity_set.get(id=activity_id)
+    this_activity = get_object_or_404(request.user.stravatoken.stravaathlete.activity_set, id=activity_id)
     activity_dict = {x.name: x.value_from_object(this_activity) for x in Activity._meta.get_fields()}
     return render(request, "strava/activity.html", {"activity": this_activity, "activity_dict": activity_dict})
