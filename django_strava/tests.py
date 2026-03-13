@@ -16,10 +16,10 @@ def test_webhook():
         }
     }"""
     d = json.loads(response_text)
-    d["object_type"] = {v.lower(): k for k, v in WebhookEvents.ObjectType.choices}[
+    d["object_type"] = {v.lower(): k for k, v in WebhookEvent.ObjectType.choices}[
         d["object_type"]
     ]
-    d["aspect_type"] = {v.lower(): k for k, v in WebhookEvents.AspectType.choices}[
+    d["aspect_type"] = {v.lower(): k for k, v in WebhookEvent.AspectType.choices}[
         d["aspect_type"]
     ]
     w = WebhookEvent(**d)

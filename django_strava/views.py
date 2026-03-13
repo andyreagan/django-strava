@@ -7,7 +7,6 @@ import threading
 import copy
 
 import requests
-from django.contrib.auth import login
 from django.http import (
     HttpRequest,
     Http404,
@@ -121,14 +120,14 @@ def save_activity_from_dict(activity: dict, athlete: StravaAthlete) -> None:
     # flatten lat/long
     if (
         "start_latlng" in activity
-        and type(activity.get("start_latlng")) == list
+        and isinstance(activity.get("start_latlng"), list)
         and len(activity.get("start_latlng")) == 2
     ):
         activity["start_latitude"] = activity["start_latlng"][0]
         activity["start_longitude"] = activity["start_latlng"][1]
     if (
         "end_latlng" in activity
-        and type(activity.get("end_latlng")) == list
+        and isinstance(activity.get("end_latlng"), list)
         and len(activity.get("end_latlng")) == 2
     ):
         activity["end_latitude"] = activity["end_latlng"][0]
