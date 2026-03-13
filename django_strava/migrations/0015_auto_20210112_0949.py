@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('strava', '0014_webhookevent_processed'),
+        ("strava", "0014_webhookevent_processed"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='activity',
-            name='prefer_perceived_exertion',
+            model_name="activity",
+            name="prefer_perceived_exertion",
             field=models.BooleanField(default=False, null=True),
         ),
     ]

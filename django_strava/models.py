@@ -176,7 +176,6 @@ class Activity(models.Model):
     # - velocity_smooth
     # - grade_smooth
 
-
     def get_example_data(user_index=0, n_activities=30):
         all_keys = set()
         example_data = dict()
@@ -185,9 +184,9 @@ class Activity(models.Model):
         for a in athlete.activity_set.all()[:n_activities]:
             activity_id = a.id
             url = (
-            f"https://www.strava.com/api/v3/activities/{activity_id}"
-            + "?"
-            + urllib.parse.urlencode({"include_all_efforts": False})
+                f"https://www.strava.com/api/v3/activities/{activity_id}"
+                + "?"
+                + urllib.parse.urlencode({"include_all_efforts": False})
             )
             r = requests.get(url, data=data)
             activity = r.json()
@@ -199,9 +198,27 @@ class Activity(models.Model):
                 if key in (activity.keys()) and key not in example_data:
                     example_data[key] = activity[key]
 
-            {k: (v, type(v)) for k, v in example_data.items() if type(v) not in {list, dict, type(None)}}
+            {
+                k: (v, type(v))
+                for k, v in example_data.items()
+                if type(v) not in {list, dict, type(None)}
+            }
 
-            print('\n'.join([f'{k} = models.'+{int: 'IntegerField(null=True)', float: 'FloatField(null=True)', bool: 'BooleanField(default=False)', str: 'CharField(max_length=1024, null=True)'}[type(v)] for k, v in example_data.items() if type(v) not in {list, dict, type(None)}]))
+            print(
+                "\n".join(
+                    [
+                        f"{k} = models."
+                        + {
+                            int: "IntegerField(null=True)",
+                            float: "FloatField(null=True)",
+                            bool: "BooleanField(default=False)",
+                            str: "CharField(max_length=1024, null=True)",
+                        }[type(v)]
+                        for k, v in example_data.items()
+                        if type(v) not in {list, dict, type(None)}
+                    ]
+                )
+            )
 
 
 class WebhookEvent(models.Model):

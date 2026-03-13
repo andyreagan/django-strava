@@ -4,30 +4,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('strava', '0007_auto_20210107_2356'),
+        ("strava", "0007_auto_20210107_2356"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='activity',
-            name='elapsed_time',
+            model_name="activity",
+            name="elapsed_time",
             field=models.IntegerField(),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='name',
+            model_name="activity",
+            name="name",
             field=models.CharField(max_length=1024),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='start_date',
+            model_name="activity",
+            name="start_date",
             field=models.DateTimeField(),
         ),
         migrations.AlterField(
-            model_name='activity',
-            name='type',
+            model_name="activity",
+            name="type",
             field=models.CharField(max_length=200),
         ),
     ]

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('strava', '0012_auto_20210111_1622'),
+        ("strava", "0012_auto_20210111_1622"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='webhookevent',
-            name='updates',
+            model_name="webhookevent",
+            name="updates",
             field=models.JSONField(null=True),
         ),
     ]

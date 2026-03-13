@@ -8,8 +8,13 @@ import copy
 
 import requests
 from django.contrib.auth import login
-from django.contrib.auth.models import User
-from django.http import HttpRequest, Http404, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import (
+    HttpRequest,
+    Http404,
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 
@@ -57,20 +62,20 @@ def refresh_access_token(st: StravaToken) -> None:
             print_debug(f"No {key} in returned response: {response}.")
             return None
 
-    st.access_token = response['access_token']
-    st.expires_at = response['expires_at']
-    st.refresh_token = response['refresh_token']
+    st.access_token = response["access_token"]
+    st.expires_at = response["expires_at"]
+    st.refresh_token = response["refresh_token"]
     # not confident we'll get this one back...
-    if 'expires_in' in response:
-        st.expires_in = response['expires_in']
+    if "expires_in" in response:
+        st.expires_in = response["expires_in"]
 
     st.save()
 
 
 def login(request: HttpRequest) -> HttpResponseRedirect:
-    '''
+    """
     Redirect to authenticate to with Strava.
-    '''
+    """
     data = {
         "client_id": settings.STRAVA_CLIENT_ID,
         "redirect_uri": "https://dashboard.aws.andyreagan.com/strava/success",
@@ -87,7 +92,7 @@ def login(request: HttpRequest) -> HttpResponseRedirect:
 
 
 def save_activity_from_dict(activity: dict, athlete: StravaAthlete) -> None:
-    '''
+    """
     Save an activity to an athlete's profile.
     Activity dict must contain the required fields of Activity model:
     - id: int
@@ -95,7 +100,7 @@ def save_activity_from_dict(activity: dict, athlete: StravaAthlete) -> None:
     - type: char
     - start_date: datetime
     - elapsed_time: int
-    '''
+    """
     model_fields = {field.name for field in Activity._meta.get_fields()}
     activity["athlete"] = athlete
 
@@ -109,15 +114,25 @@ def save_activity_from_dict(activity: dict, athlete: StravaAthlete) -> None:
     ).replace(tzinfo=pytz.UTC)
     # then compute the offset and set that instead
     # there may be a utc_offset in the activity response, but I won't rely on it
-    activity["start_date_local"] = activity["start_date_local"].replace(tzinfo=datetime.timezone(activity["start_date_local"] - activity["start_date"]))
+    activity["start_date_local"] = activity["start_date_local"].replace(
+        tzinfo=datetime.timezone(activity["start_date_local"] - activity["start_date"])
+    )
 
     # flatten lat/long
-    if 'start_latlng' in activity and type(activity.get('start_latlng')) == list and len(activity.get('start_latlng')) == 2:
-        activity['start_latitude'] = activity['start_latlng'][0]
-        activity['start_longitude'] = activity['start_latlng'][1]
-    if 'end_latlng' in activity and type(activity.get('end_latlng')) == list and len(activity.get('end_latlng')) == 2:
-        activity['end_latitude'] = activity['end_latlng'][0]
-        activity['end_longitude'] = activity['end_latlng'][1]
+    if (
+        "start_latlng" in activity
+        and type(activity.get("start_latlng")) == list
+        and len(activity.get("start_latlng")) == 2
+    ):
+        activity["start_latitude"] = activity["start_latlng"][0]
+        activity["start_longitude"] = activity["start_latlng"][1]
+    if (
+        "end_latlng" in activity
+        and type(activity.get("end_latlng")) == list
+        and len(activity.get("end_latlng")) == 2
+    ):
+        activity["end_latitude"] = activity["end_latlng"][0]
+        activity["end_longitude"] = activity["end_latlng"][1]
 
     activity_fields = set(activity.keys())
 
@@ -126,20 +141,19 @@ def save_activity_from_dict(activity: dict, athlete: StravaAthlete) -> None:
     )
     s.save()
 
-    activity_missing = (model_fields - activity_fields)
-    activity_extra = (activity_fields - model_fields)
+    activity_missing = model_fields - activity_fields
+    activity_extra = activity_fields - model_fields
     logger.info(f"{activity_missing=}")
     logger.info(f"{activity_extra=}")
 
 
 def save_activities_from_response(activity_list: list, athlete: StravaAthlete) -> None:
-    '''
-    '''
+    """ """
     for activity in activity_list:
         save_activity_from_dict(activity, athlete)
 
 
-def get_athlete_activities(athlete: StravaAthlete, max_requests: int=10) -> None:
+def get_athlete_activities(athlete: StravaAthlete, max_requests: int = 10) -> None:
     per_page = 200
     refresh_access_token(athlete.user)
     data = {
@@ -180,7 +194,7 @@ def get_single_activity(owner_id: int, activity_id: int) -> None:
 
 def success(request: HttpRequest) -> HttpResponse:
     if "code" not in request.GET:
-        raise Http404 (f"No access code returned: {request.GET}.")
+        raise Http404(f"No access code returned: {request.GET}.")
 
     data = {
         "client_id": settings.STRAVA_CLIENT_ID,
@@ -192,11 +206,11 @@ def success(request: HttpRequest) -> HttpResponse:
     # rather than raise an application error, pass that error back to the user:
     # r.raise_for_status()
     if r.status_code != requests.codes.ok:
-        raise Http404 (f"Error in strava oauth handshake: {r.text}")
+        raise Http404(f"Error in strava oauth handshake: {r.text}")
 
     athlete = r.json()
     if "access_token" not in athlete:
-        raise Http404 (f"No access token returned response: {athlete}.")
+        raise Http404(f"No access token returned response: {athlete}.")
 
     # update these
     request.user.first_name = athlete["athlete"]["firstname"]
@@ -241,7 +255,7 @@ def webhook(request: HttpRequest) -> HttpResponse:
         w = WebhookEvent(**d)
         w.save()
         # pass the event id rather than the object (why?)
-        t = threading.Thread(target=fetch_or_update,args=[w.id])
+        t = threading.Thread(target=fetch_or_update, args=[w.id])
         t.setDaemon(True)
         t.start()
         return HttpResponse("")
@@ -254,7 +268,7 @@ def webhook(request: HttpRequest) -> HttpResponse:
         return JsonResponse({"hub.challenge": challenge})
     else:
         logger.error(request)
-        raise Http404 ("Only know how to respond to GET and POST requests.")
+        raise Http404("Only know how to respond to GET and POST requests.")
 
 
 def fetch_or_update(w_id: int) -> None:
@@ -274,9 +288,9 @@ def fetch_or_update(w_id: int) -> None:
                 print_debug("found it")
                 activity = activities[0]
                 model_fields = {field.name for field in Activity._meta.get_fields()}
-                updates =  copy.deepcopy(w.updates)
-                if 'title' in updates:
-                    updates['name'] = updates['title']
+                updates = copy.deepcopy(w.updates)
+                if "title" in updates:
+                    updates["name"] = updates["title"]
                 for k, v in updates.items():
                     if k in model_fields:
                         print_debug(f"setting field {k} in activity id {w.object_id}")
@@ -285,7 +299,7 @@ def fetch_or_update(w_id: int) -> None:
                         print_debug(f"can't set field {k} in activity id {w.object_id}")
                         pass
                 activity.save()
-            else: # else go get it
+            else:  # else go get it
                 print_debug("it was an update, but we didn't have it, so go get it")
                 get_single_activity(owner_id=w.owner_id, activity_id=w.object_id)
         else:  # delete = 3
@@ -300,6 +314,14 @@ def fetch_or_update(w_id: int) -> None:
 
 
 def activity(request: HttpRequest, activity_id: int) -> HttpResponse:
-    this_activity = get_object_or_404(request.user.stravatoken.stravaathlete.activity_set, id=activity_id)
-    activity_dict = {x.name: x.value_from_object(this_activity) for x in Activity._meta.get_fields()}
-    return render(request, "strava/activity.html", {"activity": this_activity, "activity_dict": activity_dict})
+    this_activity = get_object_or_404(
+        request.user.stravatoken.stravaathlete.activity_set, id=activity_id
+    )
+    activity_dict = {
+        x.name: x.value_from_object(this_activity) for x in Activity._meta.get_fields()
+    }
+    return render(
+        request,
+        "strava/activity.html",
+        {"activity": this_activity, "activity_dict": activity_dict},
+    )

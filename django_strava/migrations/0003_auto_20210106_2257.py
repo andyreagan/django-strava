@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('strava', '0002_auto_20210106_2253'),
+        ("strava", "0002_auto_20210106_2253"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='stravatoken',
-            name='expires_at',
+            model_name="stravatoken",
+            name="expires_at",
             field=models.IntegerField(null=True),
         ),
         migrations.AlterField(
-            model_name='stravatoken',
-            name='expires_in',
+            model_name="stravatoken",
+            name="expires_in",
             field=models.IntegerField(null=True),
         ),
     ]

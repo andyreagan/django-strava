@@ -4,33 +4,32 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('strava', '0001_initial'),
+        ("strava", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='stravatoken',
-            old_name='token',
-            new_name='access_token',
+            model_name="stravatoken",
+            old_name="token",
+            new_name="access_token",
         ),
         migrations.AddField(
-            model_name='stravatoken',
-            name='expires_at',
+            model_name="stravatoken",
+            name="expires_at",
             field=models.IntegerField(default=0),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='stravatoken',
-            name='expires_in',
+            model_name="stravatoken",
+            name="expires_in",
             field=models.IntegerField(default=0),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='stravatoken',
-            name='refresh_token',
-            field=models.CharField(default='', max_length=1024),
+            model_name="stravatoken",
+            name="refresh_token",
+            field=models.CharField(default="", max_length=1024),
             preserve_default=False,
         ),
     ]

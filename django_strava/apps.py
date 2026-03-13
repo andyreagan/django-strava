@@ -3,5 +3,5 @@ from django.apps import AppConfig
 
 class StravaConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = 'django_strava'
-    label = 'strava'
+    name = "django_strava"
+    label = "strava"

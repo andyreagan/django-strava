@@ -12,7 +12,7 @@ from unittest.mock import MagicMock, patch
 
 import pytz
 from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
 
 from django_strava.models import Activity, StravaAthlete, StravaToken, WebhookEvent
@@ -21,6 +21,7 @@ from django_strava.models import Activity, StravaAthlete, StravaToken, WebhookEv
 # ---------------------------------------------------------------------------
 # Helpers shared across test cases
 # ---------------------------------------------------------------------------
+
 
 def make_user(username="cyclist", password="pass"):
     return User.objects.create_user(username=username, password=password)
@@ -61,8 +62,8 @@ def make_activity(athlete, activity_id=101):
 # URL resolution
 # ---------------------------------------------------------------------------
 
-class UrlResolutionTest(TestCase):
 
+class UrlResolutionTest(TestCase):
     def test_login_url_resolves(self):
         url = reverse("stravalogin")
         self.assertEqual(url, "/strava/login")
@@ -77,6 +78,7 @@ class UrlResolutionTest(TestCase):
 
     def test_webhook_url_exists(self):
         from django.urls import resolve
+
         match = resolve("/strava/webhook")
         self.assertEqual(match.func.__name__, "webhook")
 
@@ -85,8 +87,8 @@ class UrlResolutionTest(TestCase):
 # login view
 # ---------------------------------------------------------------------------
 
-class LoginViewTest(TestCase):
 
+class LoginViewTest(TestCase):
     def test_login_redirects_to_strava(self):
         response = self.client.get(reverse("stravalogin"))
         self.assertEqual(response.status_code, 302)
@@ -106,8 +108,8 @@ class LoginViewTest(TestCase):
 # success view
 # ---------------------------------------------------------------------------
 
-class SuccessViewTest(TestCase):
 
+class SuccessViewTest(TestCase):
     def setUp(self):
         self.user = make_user()
         self.client.force_login(self.user)
@@ -216,8 +218,8 @@ class SuccessViewTest(TestCase):
 # activity view
 # ---------------------------------------------------------------------------
 
-class ActivityViewTest(TestCase):
 
+class ActivityViewTest(TestCase):
     def setUp(self):
         self.user = make_user()
         self.token = make_token(self.user)
@@ -255,8 +257,8 @@ class ActivityViewTest(TestCase):
 # webhook view
 # ---------------------------------------------------------------------------
 
-class WebhookViewTest(TestCase):
 
+class WebhookViewTest(TestCase):
     WEBHOOK_URL = "/strava/webhook"
 
     def _post_event(self, payload):
@@ -329,7 +331,9 @@ class WebhookViewTest(TestCase):
         self.assertEqual(data["hub.challenge"], "abc123")
 
     def test_unsupported_method_raises_404(self):
-        response = self.client.put(self.WEBHOOK_URL, data="{}", content_type="application/json")
+        response = self.client.put(
+            self.WEBHOOK_URL, data="{}", content_type="application/json"
+        )
         self.assertEqual(response.status_code, 404)
 
 
@@ -337,8 +341,8 @@ class WebhookViewTest(TestCase):
 # fetch_or_update helper (background task logic, no real API calls)
 # ---------------------------------------------------------------------------
 
-class FetchOrUpdateTest(TestCase):
 
+class FetchOrUpdateTest(TestCase):
     def setUp(self):
         self.user = make_user("runner2")
         self.token = make_token(self.user)

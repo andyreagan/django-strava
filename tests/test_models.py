@@ -8,7 +8,6 @@ helper – all without hitting the real Strava API.
 
 import datetime
 
-import pytest
 import pytz
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -19,6 +18,7 @@ from django_strava.models import Activity, StravaAthlete, StravaToken, WebhookEv
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def make_user(username="testathlete"):
     return User.objects.create_user(username=username, password="pw")
@@ -59,8 +59,8 @@ def make_activity(athlete, activity_id=1001):
 # StravaToken
 # ---------------------------------------------------------------------------
 
-class StravaTokenModelTest(TestCase):
 
+class StravaTokenModelTest(TestCase):
     def setUp(self):
         self.user = make_user()
         self.token = make_token(self.user)
@@ -86,15 +86,17 @@ class StravaTokenModelTest(TestCase):
 
     def test_token_deleted_with_user(self):
         self.user.delete()
-        self.assertEqual(StravaToken.objects.filter(access_token="acc_abc123").count(), 0)
+        self.assertEqual(
+            StravaToken.objects.filter(access_token="acc_abc123").count(), 0
+        )
 
 
 # ---------------------------------------------------------------------------
 # StravaAthlete
 # ---------------------------------------------------------------------------
 
-class StravaAthleteModelTest(TestCase):
 
+class StravaAthleteModelTest(TestCase):
     def setUp(self):
         self.user = make_user()
         self.token = make_token(self.user)
@@ -128,8 +130,8 @@ class StravaAthleteModelTest(TestCase):
 # Activity
 # ---------------------------------------------------------------------------
 
-class ActivityModelTest(TestCase):
 
+class ActivityModelTest(TestCase):
     def setUp(self):
         self.user = make_user()
         self.token = make_token(self.user)
@@ -198,8 +200,8 @@ class ActivityModelTest(TestCase):
 # WebhookEvent
 # ---------------------------------------------------------------------------
 
-class WebhookEventModelTest(TestCase):
 
+class WebhookEventModelTest(TestCase):
     def _make_event(self, object_type=1, aspect_type=1, **kwargs):
         defaults = dict(
             object_type=object_type,
@@ -257,6 +259,7 @@ class WebhookEventModelTest(TestCase):
 # ---------------------------------------------------------------------------
 # save_activity_from_dict helper
 # ---------------------------------------------------------------------------
+
 
 class SaveActivityFromDictTest(TestCase):
     """Tests for the views.save_activity_from_dict utility."""
@@ -326,7 +329,7 @@ class SaveActivityFromDictTest(TestCase):
         from django_strava.views import save_activity_from_dict
 
         data = self._base_activity_dict(activity_id=5004)
-        data["resource_state"] = 3          # not a model field
-        data["embed_token"] = "tok123"      # not a model field
-        save_activity_from_dict(data, self.athlete)                # should not raise
+        data["resource_state"] = 3  # not a model field
+        data["embed_token"] = "tok123"  # not a model field
+        save_activity_from_dict(data, self.athlete)  # should not raise
         self.assertEqual(Activity.objects.filter(pk=5004).count(), 1)

@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('strava', '0011_auto_20210108_1405'),
+        ("strava", "0011_auto_20210108_1405"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='activity',
-            name='fetched_detail',
+            model_name="activity",
+            name="fetched_detail",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='activity',
-            name='fetched_streams',
+            model_name="activity",
+            name="fetched_streams",
             field=models.BooleanField(default=False),
         ),
     ]

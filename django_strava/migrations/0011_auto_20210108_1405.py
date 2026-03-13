@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('strava', '0010_auto_20210108_1355'),
+        ("strava", "0010_auto_20210108_1355"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='activity',
-            name='end_latitude',
+            model_name="activity",
+            name="end_latitude",
             field=models.FloatField(null=True),
         ),
         migrations.AddField(
-            model_name='activity',
-            name='end_longitude',
+            model_name="activity",
+            name="end_longitude",
             field=models.FloatField(null=True),
         ),
     ]

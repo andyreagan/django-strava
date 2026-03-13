@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('strava', '0004_webhookevents'),
+        ("strava", "0004_webhookevents"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='WebhookEvents',
-            new_name='WebhookEvent',
+            old_name="WebhookEvents",
+            new_name="WebhookEvent",
         ),
     ]

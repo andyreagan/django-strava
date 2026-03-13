@@ -5,15 +5,16 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('strava', '0005_auto_20210107_1540'),
+        ("strava", "0005_auto_20210107_1540"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='stravaathlete',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='strava.stravatoken'),
+            model_name="stravaathlete",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, to="strava.stravatoken"
+            ),
         ),
     ]
